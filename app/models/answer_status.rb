@@ -1,0 +1,2 @@
+class AnswerStatus < ApplicationRecord
+end

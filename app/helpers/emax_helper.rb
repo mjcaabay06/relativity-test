@@ -1,0 +1,2 @@
+module EmaxHelper
+end
