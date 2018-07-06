@@ -1,0 +1,41 @@
+<style type="text/css">
+  table td{
+    border: 0 !important;
+  }
+</style>
+<div class="col-md-8 col-md-offset-2">
+  <table class="table table-borderless" style="margin-bottom: 15px;">
+    <tbody>
+      <tr>
+        <td>Total Exam: <b><%= @result.count %></b></td>
+        <td>Correct: <b><%= @correct %></b></td>
+        <td>Wrong: <b><%= @wrong %></b></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-right" style="margin-bottom: 20px">
+    <a href="/?start=1" class="btn btn-primary">Try Again</a>
+  </div>
+  <% @result.each do |r| %>
+    <% isCheck = QuestionAnswer.check_answer(r.question_id, r.answer_id).count %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <% if isCheck > 0 %>
+          <i class="glyphicon glyphicon-ok alert-success" style="margin-right: 10px"></i>
+        <% else %>
+          <i class="glyphicon glyphicon-remove alert-danger" style="margin-right: 10px"></i>
+        <% end %>
+        <%= r.question.question %>
+      </div>
+      <div class="panel-body" style="margin-left: 50px;">
+        <p>Your answer: <%= r.answer.answer %></p>
+        <% unless isCheck > 0 %>
+          <p><b>Answer:</b> <span style="background-color: #F8EB00"><%= QuestionAnswer.find_by(question_id: r.question_id).answer.answer %></span></p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="text-right">
+    <a href="/?start=1" class="btn btn-primary">Try Again</a>
+  </div>
+</div>
