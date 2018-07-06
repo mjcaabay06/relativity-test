@@ -8,6 +8,7 @@ class QuestionController < ApplicationController
   def create
     question = Question.create(question: params[:question])
     data = []
+    dataDummy = []
 
     params[:answer][:answer_ids].each do |a|
       data << {
@@ -16,8 +17,15 @@ class QuestionController < ApplicationController
       }
     end
 
+    params[:answer][:dummy_answer_ids].each do |a|
+      dataDummy << {
+        question_id: question.id,
+        answer_id: a.to_i
+      }
+    end
+
     respond_to do |format|
-      if QuestionAnswer.create(data)
+      if QuestionAnswer.create(data) && QuestionDummyAnswer.create(dataDummy)
         format.html { redirect_to '/question/new', notice: 'Success' }
       end
     end

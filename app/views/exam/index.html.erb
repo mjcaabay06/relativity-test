@@ -1,2 +1,74 @@
-<h1>Exam#index</h1>
-<p>Find me in app/views/exam/index.html.erb</p>
+<div class="col-md-8 col-md-offset-2">
+  <% @questions.shuffle.each do |q| %>
+    <div class="panel panel-default panel-question <%= 'hidden' if @cnt > 1 %>">
+      <div class="panel-heading">
+        <%= q.question %>
+      </div>
+      <div class="panel-body" style="padding-left: 40px">
+        <% answers = []
+          QuestionDummyAnswer.where(question_id: q.id).shuffle.take(3).each do |a|
+            answers << {
+              answer: a.answer.answer,
+              answer_id: a.answer_id,
+              is: false
+            }
+          end
+
+          QuestionAnswer.where(question_id: q.id).each do |a|
+            answers << {
+              answer: a.answer.answer,
+              answer_id: a.answer_id,
+              is: true
+            }
+          end
+        %>
+        <% answers.shuffle.each do |a| %>
+          <div class="form-group">
+            <input type="radio" data-qid="<%= q.id %>" id="answer<%= a[:answer_id] %>-<%= q.id %>" name="answer-<%= q.id %>" value="<%= a[:answer_id] %>">
+            <label style="font-weight: normal" for="answer<%= a[:answer_id] %>-<%= q.id %>"><%= a[:answer] %></label>
+          </div>
+        <% end %>
+      </div>
+      <div class="panel-footer">
+        <label><%= @cnt %></label>
+        <% if @questions.count > @cnt %>
+          <button type="button" class="btn btn-primary btn-next pull-right" id="btn-<%= q.id %>" data-value='<%= q.id %>' disabled>Next</button>
+        <% else %>
+          <button type="button" class="btn btn-primary btn-submit pull-right" id="btn-<%= q.id %>" data-value='<%= q.id %>' disabled>Submit</button>
+        <% end %>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <% @cnt += 1 %>
+  <% end %>
+</div>
+<%= form_for exam_index_path, html: { class: 'hidden', id: 'form-submit' } do |f| %>
+  <textarea id="answers" name="answers"></textarea>
+<% end %>
+<script type="text/javascript">
+  var answer_arr = new Array();
+
+  $(document).ready(function(){
+    $('input[type=radio]').on('click', function(){
+      var qid = $(this).data('qid');
+      $('#btn-' + qid).removeAttr('disabled');
+    });
+    $(".btn-next").on('click', function(){
+      $('.panel-question').addClass('hidden');
+      $(this).parent().parent().next('.panel-question').removeClass('hidden');
+      pushAnswer(this);
+    });
+
+    $(".btn-submit").on('click', function(){
+      pushAnswer(this);
+      $('textarea#answers').val(JSON.stringify(answer_arr));
+      $('#form-submit').submit();
+    });
+  });
+
+  function pushAnswer(elem){
+    var qid = $(elem).data('value');
+    var answer = $("input[name=answer-" + qid + "]:checked").val();
+    answer_arr.push({ 'qid': qid, 'answer': answer });
+  }
+</script>

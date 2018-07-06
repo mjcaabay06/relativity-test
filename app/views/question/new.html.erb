@@ -1,6 +1,6 @@
-<div class="col-md-6 col-md-offset-3">
+<div class="col-md-8 col-md-offset-2">
   <%= form_for Question.new, url: '/question', html: { class: 'form-horizontal', role: 'form' } do |f| %>
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-10 col-md-offset-1">
       <div class="form-group">
         <textarea class="form-control" name="question" placeholder="Question"></textarea>
       </div>
@@ -8,7 +8,16 @@
         <%= select('', 'answer_status_id', AnswerStatus.all.order(:description).collect { |as| [as.description, as.id] }, { }, class: 'form-control') %>
       </div>
       <div class="form-group">
-        <select id="answer_answer_ids" class="form-control" multiple="multiple" style="height: 300px" name="answer[answer_ids][]"></select>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label">Answer</label>
+            <select id="answer_answer_ids" class="form-control" multiple="multiple" style="height: 200px" name="answer[answer_ids][]"></select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Dummy Answer</label>
+            <select id="answer_dummy_answer_ids" class="form-control" multiple="multiple" style="height: 200px" name="answer[dummy_answer_ids][]"></select>
+          </div>
+        </div>
       </div>
       <div class="form-group text-center">
         <button class="btn btn-primary" type="submit">Save</button>
@@ -29,6 +38,7 @@
   function fillAnswers(id) {
     $.get('/question/get-answers/' + id, function(html){
       $("#answer_answer_ids").html(html);
+      $("#answer_dummy_answer_ids").html(html);
     });
   }
 </script>
