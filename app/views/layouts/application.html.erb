@@ -7,6 +7,16 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => 'reload' %>
     <%= csrf_meta_tags %>
+    <style type="text/css">
+      @media (max-width: 600px) {
+        main {
+          padding: 15px;
+        }
+        .panel .panel-body{
+          margin: 0 !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="hidden">
